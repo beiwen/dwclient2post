@@ -8,6 +8,7 @@ import gomapapirest.resources.MyPostResource;
 import gomapapirest.resources.Client2Post;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -28,7 +29,10 @@ public class Client2PostApplication extends Application<Client2PostConfiguration
         
         environment.jersey().register(MultiPartFeature.class);
         
-        final Client client = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration()).build(getName());
+        JerseyClientConfiguration conf = configuration.getJerseyClientConfiguration();
+        conf.setChunkedEncodingEnabled(false);
+        
+        final Client client = new JerseyClientBuilder(environment).using(conf).build(getName());
         
         environment.jersey().register(new Client2Post(client));           
         
